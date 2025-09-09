@@ -1,0 +1,24 @@
+const mysql = require('mysql2/promise');
+
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+  port: process.env.DB_PORT,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+
+pool.getConnection()
+  .then(connection => {
+    console.log('Conectado ao banco de dados MySQL!');
+    connection.release(); // Libera a conexão de volta para o pool
+  })
+  .catch(err => {
+    console.error('Erro inesperado na conexão com o banco de dados MySQL:', err);
+    process.exit(-1); // Encerra o processo da aplicação em caso de erro crítico de conexão
+  });
+
+module.exports = pool;
