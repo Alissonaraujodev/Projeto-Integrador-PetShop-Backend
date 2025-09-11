@@ -5,7 +5,7 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 
-const db = require('./src/config/database');
+const db = require('./config/db');
 
 app.use(cors());
 app.use(express.json());
@@ -15,23 +15,23 @@ app.get('/', (req, res) => {
   res.send('Bem-vindo ao seu sistema de gestão! O back-end está funcionando.');
 });
 
-// Função para iniciar o servidor e testar a conexão com o banco de dados
-async function startServer() {
-  try {
-    // Tenta obter uma conexão para testar o banco de dados
-    const connection = await db.getConnection();
-    console.log('✅ Conexão com o banco de dados estabelecida com sucesso!');
-    connection.release(); // Libera a conexão imediatamente
+app.get('/api/test-db', async (req, res) => {
+    try {
+        const [result] = await db.query('SELECT 1+1 AS solution');
+        res.status(200).json({
+            message: 'Conexão com o banco de dados bem-sucedida!',
+            solution: result[0].solution
+        });
+    } catch (error) {
+        console.error('Erro ao testar conexão com o banco de dados:', error);
+        res.status(500).json({
+            message: 'Erro ao conectar ao banco de dados',
+            error: error.message
+        });
+    }
+});
 
-    app.listen(port, () => {
-      console.log(`🚀 Servidor rodando em http://localhost:${port}`);
-      console.log('Pressione CTRL+C para parar o servidor.');
-    });
-  } catch (err) {
-    console.error('❌ Erro ao conectar com o banco de dados:', err.message);
-    process.exit(1); // Encerra a aplicação se não houver conexão com o DB
-  }
-}
-
-// Chama a função para iniciar tudo
-startServer();
+app.listen(port, () => {
+  console.log(`Servidor rodando em http://localhost:${port}`);
+  console.log('Pressione CTRL+C para parar o servidor.');
+});
