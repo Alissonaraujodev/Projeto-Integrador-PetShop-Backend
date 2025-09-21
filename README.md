@@ -1,6 +1,6 @@
-# Sistema de Gerenciamento para Pet Shop - Backend
+# Projeto Integrador - Sistema de Gerenciamento para Pet Shop - Backend
 
-Este projeto é um sistema de backend para agendamento e gerenciamento de serviços em um pet shop. A ideia inicial é criar uma plataforma robusta e segura para controlar agendamentos de banho e tosa, com um sistema de cadastro e controle de acesso para funcionários, clientes e seus pets
+Este projeto é um sistema para agendamento e gerenciamento de serviços em um pet shop, desenvolvida como parte da disciplina de Análise e Desenvolvimento de Sistemas (ADS). A ideia inicial é criar uma plataforma robusta e segura para controlar agendamentos de banho e tosa, com um sistema de cadastro e controle de acesso para funcionários, clientes e seus pets.
 
 **Funcionalidades Principais**
 
