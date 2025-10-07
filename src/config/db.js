@@ -1,15 +1,17 @@
 const mysql = require('mysql2/promise');
 
-const pool = mysql.createPool({
+const dbConfig = {
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
+  database: process.env.DB_NAME,
   port: process.env.DB_PORT,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
-});
+};
+
+const pool = mysql.createPool(dbConfig);
 
 // Testa a conexão ao iniciar o módulo
 pool.getConnection()
@@ -22,4 +24,4 @@ pool.getConnection()
     process.exit(-1); // Encerra o processo da aplicação em caso de erro crítico de conexão
   });
 
-module.exports = pool;
+module.exports = {pool, dbConfig};
