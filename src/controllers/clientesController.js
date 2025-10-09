@@ -24,7 +24,7 @@ async function loginCliente(req, res) {
   const { email, senha } = req.body;
 
   try {
-    const cliente = await clienteModel.findByEmail(email);
+    const cliente = await clienteModel.encontrarPorEmail(email);
     if (!cliente) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
     }

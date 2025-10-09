@@ -24,7 +24,7 @@ async function loginFuncionario(req, res) {
   const { email, senha } = req.body;
 
   try {
-    const funcionario = await funcionarioModel.findByEmail(email);
+    const funcionario = await funcionarioModel.encontrarPorEmail(email);
     if (!funcionario) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
     }

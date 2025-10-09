@@ -8,8 +8,10 @@ const db = require('./src/config/db');
 const app = express();
 const port = process.env.PORT || 3000;
 
-const funcionariosRoutes = require('./routes/funcionariosRoutes');
-const clientesRoutes = require('./routes/clientesRoutes');
+const funcionariosRoutes = require('./src/routes/funcionariosRoutes');
+const clientesRoutes = require('./src/routes/clientesRoutes');
+const petRoutes = require('./src/routes/petsRoutes');
+const servicosRoutes = require('./src/routes/servicosRoutes');
 
 app.use(cors());
 app.use(express.json());
@@ -64,8 +66,10 @@ app.get('/api/test-db', async (req, res) => {
     }
 });
 
-app.use('/api', funcionariosRoutes);
-app.use('/api', clientesRoutes);
+app.use('/', funcionariosRoutes);
+app.use('/', clientesRoutes);
+app.use('/', petRoutes);
+app.use('/', servicosRoutes);
 
 app.get('/', (req, res) => {
   res.send('Bem-vindo ao seu sistema de gestão! O back-end está funcionando.');
