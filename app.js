@@ -12,6 +12,8 @@ const funcionariosRoutes = require('./src/routes/funcionariosRoutes');
 const clientesRoutes = require('./src/routes/clientesRoutes');
 const petRoutes = require('./src/routes/petsRoutes');
 const servicosRoutes = require('./src/routes/servicosRoutes');
+const agendamentosRoutes = require('./src/routes/agendamentosRoutes');
+const consultasRoutes = require('./src/routes/consultasRoutes')
 
 app.use(cors());
 app.use(express.json());
@@ -70,6 +72,8 @@ app.use('/', funcionariosRoutes);
 app.use('/', clientesRoutes);
 app.use('/', petRoutes);
 app.use('/', servicosRoutes);
+app.use('/', agendamentosRoutes);
+app.use('/', consultasRoutes);
 
 app.get('/', (req, res) => {
   res.send('Bem-vindo ao seu sistema de gestão! O back-end está funcionando.');

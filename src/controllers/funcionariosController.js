@@ -2,6 +2,8 @@ const bcrypt = require('bcrypt');
 const funcionarioModel = require('../models/funcionariosModel');
 
 async function cadastrarFuncionario(req, res) {
+  const id_profissional_logado = req.session.userId;
+  
   const { nome, email, senha, cargo, crmv } = req.body;
 
   try {
