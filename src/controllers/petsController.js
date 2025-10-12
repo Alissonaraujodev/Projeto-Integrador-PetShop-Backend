@@ -17,9 +17,27 @@ async function cadastrarPet(req, res) {
         res.status(201).json({ message: 'Pet cadastrado com sucesso!' });
     } catch (error) {
         console.error('Erro ao cadastrar Pet:', error);
-        // Pode ser um erro de FK se o CPF na sessão não existir, ou erro de SQL
         res.status(500).json({ message: 'Erro interno ao cadastrar pet.' });
     }
 }
 
-module.exports = { cadastrarPet };
+async function listarPetsPorCliente(req, res) {
+    const cpfCliente = req.session.userId;
+
+    if (!cpfCliente) {
+        return res.status(401).json({ message: 'Acesso negado. Cliente não autenticado.' });
+    }
+
+    try {
+        const petsDoCliente = await petModel.listarPetsPorCliente(cpfCliente);
+
+        res.status(200).json(petsDoCliente);
+
+    } catch (error) {
+        console.error('Erro ao encontar Pets:', error);
+        res.status(500).json({ message: 'Erro interno ao listar pets.' });
+    }
+    
+}
+
+module.exports = { cadastrarPet, listarPetsPorCliente };

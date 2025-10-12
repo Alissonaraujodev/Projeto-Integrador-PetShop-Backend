@@ -7,5 +7,4 @@ async function criarConsulta(id_agendamento, diagnostico, medicacao, peso_pet) {
     );
 }
 
-
 module.exports = { criarConsulta };

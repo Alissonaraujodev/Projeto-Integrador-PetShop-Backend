@@ -12,4 +12,5 @@ async function cadastrarCliente(cpf, nome, email, senhaCriptografada, telefone, 
   );
 }
 
+
 module.exports = { encontrarPorEmail, cadastrarCliente };
