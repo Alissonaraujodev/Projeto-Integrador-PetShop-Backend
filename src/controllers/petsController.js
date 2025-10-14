@@ -40,4 +40,19 @@ async function listarPetsPorCliente(req, res) {
     
 }
 
-module.exports = { cadastrarPet, listarPetsPorCliente };
+async function listarTodosPets(req, res) {
+    const id_profissional_logado = req.session.userId;
+
+    try {
+        const todosPets = await petModel.listarTodosPets();
+
+        res.status(200).json(todosPets);
+
+    } catch (error) {
+        console.error('Erro ao encontar Pets:', error);
+        res.status(500).json({ message: 'Erro interno ao listar pets.' });
+    }
+    
+}
+
+module.exports = { cadastrarPet, listarPetsPorCliente, listarTodosPets };

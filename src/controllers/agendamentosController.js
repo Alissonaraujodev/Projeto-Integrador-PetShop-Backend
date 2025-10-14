@@ -17,9 +17,50 @@ async function criarAgendamento(req, res) {
         res.status(201).json({ message: 'Agendamento realizado com sucesso!' });
     } catch (error) {
         console.error('Erro ao fazer agendamento:', error);
-        // Pode ser um erro de FK se o CPF na sessão não existir, ou erro de SQL
         res.status(500).json({ message: 'Erro interno ao fazer agendamento.' });
     }
 }
 
-module.exports = { criarAgendamento };
+async function listarAgendamentoCliente(req, res) {
+     const cpfCliente = req.session.userId; 
+
+    if (!cpfCliente) {
+        return res.status(401).json({ message: 'Acesso negado. Cliente não autenticado.' });
+    }
+
+    const { idPet } = req.query;  
+
+    try {
+        const historicoAgendamentos = await agendamentoModel.listarAgendamentoCliente(
+            cpfCliente,
+            idPet       
+        );
+
+        res.status(200).json(historicoAgendamentos);
+
+    } catch (error) {
+        console.error('Erro ao buscar agendamentos:', error);
+        res.status(500).json({ message: 'Erro interno ao buscar agendamentos.' });
+    }
+}
+
+async function listarAgendamentos(req, res) {
+
+    const { data, idProfissional, servico } = req.query;  
+
+    try {
+        const agendamentos = await agendamentoModel.listarAgendamentos(
+            data, 
+            idProfissional, 
+            servico 
+        );
+
+        res.status(200).json(agendamentos);
+
+    } catch (error) {
+        console.error('Erro ao buscar agendamentos:', error);
+        res.status(500).json({ message: 'Erro interno ao buscar agendamentos.' });
+    }
+}
+
+module.exports = { criarAgendamento, listarAgendamentos, listarAgendamentoCliente };

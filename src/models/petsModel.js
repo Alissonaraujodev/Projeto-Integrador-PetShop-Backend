@@ -12,4 +12,11 @@ async function listarPetsPorCliente(cpfCliente) {
     return rows;
 }
 
-module.exports = { criarPet, listarPetsPorCliente };
+async function listarTodosPets(){
+    const [rows] = await pool.query('SELECT * FROM pets');
+    return rows;
+}
+    
+
+
+module.exports = { criarPet, listarPetsPorCliente, listarTodosPets };
