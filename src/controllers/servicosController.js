@@ -18,4 +18,24 @@ async function cadastrarServico(req, res) {
   }
 }
 
-module.exports = { cadastrarServico };
+async function listarServicos(req, res) {
+
+    const { nome_servico, categoria } = req.query;  
+
+    try {
+        const servicos = await servicoModel.listarServicos(
+            nome_servico,
+            categoria
+        );
+
+        res.status(200).json(servicos);
+
+    } catch (error) {
+        console.error('Erro ao buscar Serviços:', error);
+        res.status(500).json({ message: 'Erro interno ao buscar Serviços.' });
+    }
+}
+
+
+
+module.exports = { cadastrarServico, listarServicos };

@@ -7,30 +7,19 @@ async function criarAgendamento(id_pet, id_servico, id_profissional, data_hora, 
     );
 }
 
-async function listarAgendamentoPet(id_pet) {
-    const [rows] = await pool.query('SELECT * FROM agendamentos WHERE id_pet = ?', [id_pet]);
-    return rows;
-}
-
-/*async function listarAgendamentoCliente(cpfCliente) {
-    const [rows] = await pool.query('SELECT * FROM agendamentos WHERE cpf_cliente = ?', [cpfCliente]);
-    return rows;
-}*/
-
-async function listarAgendamentoCliente(cpfCliente){
+async function listarAgendamentoCliente(cpfCliente, idPet){
     let query =`
         SELECT
-            c.*,
+            a.*,
             a.data_hora,
             p.nome AS nome_pet,
             f.nome AS nome_funcionario,
             s.nome_servico
-        FROM consultas c
-        JOIN agendamentos aa ON c.id_agendamento = a.id_agendamento
+        FROM agendamentos a
         JOIN pets p ON a.id_pet = p.id_pet
         JOIN funcionarios f ON a.id_profissional = f.id_profissional
         JOIN servicos s ON a.id_servico = s.id_servico
-        WHERE p..cpf_clientee  = ?
+        WHERE p.cpf_cliente  = ?
     `
 
     const params = [cpfCliente];
@@ -86,7 +75,6 @@ async function listarAgendamentos(data, idProfissional, servico) {
 
 module.exports = { 
     criarAgendamento, 
-    listarAgendamentoPet,
     listarAgendamentoCliente, 
     listarAgendamentos 
 };
