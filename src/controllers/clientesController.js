@@ -43,4 +43,32 @@ async function loginCliente(req, res) {
   }
 }
 
-module.exports = { cadastrarCliente, loginCliente };
+async function atualizarCliente(req, res) {
+  const cpfCliente = req.session.userId; 
+
+  if (!cpfCliente) {
+        return res.status(401).json({ message: 'Acesso negado. Cliente não autenticado.' });
+    }
+  
+  const{
+    nome, telefone, logradouro, numero, complemento, bairro, cidade, estado, cep
+  } = req.body;
+  
+  try{
+    const dadosAtualizados = {
+    nome, telefone, logradouro, numero, complemento, bairro, cidade, estado, cep};
+
+    const atualizadoSucesso = await clienteModel.atualizarCliente(cpfCliente, dadosAtualizados);
+
+    if(atualizadoSucesso){
+      res.status(200).json({ mensagem: 'Dados atualizados com sucesso.' });
+    }else{
+      res.status(404).json({ mensagem: 'Nenhum dado para atualizar.' });
+    }  
+  }catch(error){
+    console.error('Erro ao atualizar cliente:', error);
+    res.status(500).json({ mensagem: 'Erro interno no servidor.' });
+  } 
+}
+
+module.exports = { cadastrarCliente, loginCliente, atualizarCliente };

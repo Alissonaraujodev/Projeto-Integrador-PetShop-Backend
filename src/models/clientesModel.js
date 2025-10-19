@@ -12,5 +12,29 @@ async function cadastrarCliente(cpf, nome, email, senhaCriptografada, telefone, 
   );
 }
 
+async function atualizarCliente(cpf, dados){
+    let campos = [];
+    let valores = [];
 
-module.exports = { encontrarPorEmail, cadastrarCliente };
+    for(let campo in dados){
+      if (dados[campo] !== undefined && dados[campo] !== null){
+        campos.push(`${campo} = ?`);
+        valores.push(dados[campo]);
+      }
+    }
+
+    if (campos.length === 0) return false;
+    valores.push(cpf);
+
+    const query = `
+    UPDATE clientes
+    SET ${campos.join(', ')}
+    WHERE cpf = ?
+    `;
+
+    const [result] = await pool.query(query, valores);
+    return result.affectedRows > 0;
+}
+
+
+module.exports = { encontrarPorEmail, cadastrarCliente, atualizarCliente };
