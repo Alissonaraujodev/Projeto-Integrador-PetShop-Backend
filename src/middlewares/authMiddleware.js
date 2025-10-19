@@ -11,7 +11,7 @@ function autorizarVeterinario(req, res, next) {
     const cargosPermitidos = ['Veterinario', 'Administrador'];
 
     if (!cargo || !cargosPermitidos.includes(cargo)) {
-        return res.status(403).json({ message: 'Proibido. Apenas veterinários podem registrar o diagnóstico.' });
+        return res.status(403).json({ message: 'Proibido. Apenas funcionários permitidos.' });
     }
 
     next();
