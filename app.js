@@ -8,6 +8,22 @@ const db = require('./src/config/db');
 const app = express();
 const port = process.env.PORT || 3000;
 
+const allowedOrigins = [
+  'http://localhost:5173'
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS policy'));
+    }
+  },
+  optionsSuccessStatus: 200 
+};
+app.use(cors(corsOptions));
+
 const funcionariosRoutes = require('./src/routes/funcionariosRoutes');
 const clientesRoutes = require('./src/routes/clientesRoutes');
 const petRoutes = require('./src/routes/petsRoutes');
