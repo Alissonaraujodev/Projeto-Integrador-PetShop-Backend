@@ -39,7 +39,12 @@ async function loginFuncionario(req, res) {
     req.session.userId = funcionario.id;
     req.session.userCargo = funcionario.cargo;
 
-    res.json({ message: 'Login realizado com sucesso!' });
+    res.json({ 
+      message: 'Login realizado com sucesso!',
+      tipo: 'funcionario',
+      nome: funcionario.nome,
+      cargo: funcionario.cargo
+    });
   } catch (error) {
     console.error('Erro ao fazer login:', error);
     res.status(500).json({ message: 'Erro interno no servidor' });

@@ -36,7 +36,11 @@ async function loginCliente(req, res) {
 
     req.session.userId = cliente.cpf;
 
-    res.json({ message: 'Login realizado com sucesso!' });
+    res.json({ 
+      message: 'Login realizado com sucesso!',
+      tipo: 'cliente',
+      nome: cliente.nome
+    });
   } catch (error) {
     console.error('Erro ao fazer login:', error);
     res.status(500).json({ message: 'Erro interno no servidor' });
