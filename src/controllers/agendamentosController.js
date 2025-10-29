@@ -63,4 +63,60 @@ async function listarAgendamentos(req, res) {
     }
 }
 
-module.exports = { criarAgendamento, listarAgendamentos, listarAgendamentoCliente };
+async function atualizarAgendamentoCliente(req, res) {
+    const cpfCliente = req.session.userId;
+    const { id_agendamento } = req.params; 
+    const{ data_hora, id_servico } = req.body;
+    
+    if (!cpfCliente) {
+        return res.status(401).json({ message: 'Acesso negado. Cliente não autenticado.' });
+    }
+
+    if (!id_agendamento) {
+        return res.status(400).json({ mensagem: 'ID do agendamento é obrigatório.' });
+    }
+  
+    try{
+        const atualizadoSucesso = await agendamentoModel.atualizarAgendamento(id_agendamento, { data_hora, id_servico });
+
+        if(atualizadoSucesso){
+            res.status(200).json({ mensagem: 'Dados atualizados com sucesso.' });
+        }else{
+            res.status(404).json({ mensagem: 'Nenhum dado para atualizar.' });
+        }  
+        }catch(error){
+            console.error('Erro ao atualizar Agendamento:', error);
+            res.status(500).json({ mensagem: 'Erro interno no servidor.' });
+    } 
+}
+
+async function atualizarAgendamentoVeterinario(req, res) {
+    const id_profissional_logado = req.session.userId;
+    const { id_agendamento } = req.params;
+    const{ status } = req.body;
+  
+    if (!id_agendamento) {
+        return res.status(400).json({ mensagem: 'ID do agendamento é obrigatório.' });
+    }
+
+    try{
+        const atualizadoSucesso = await agendamentoModel.atualizarAgendamento(id_agendamento, {status});
+
+        if(atualizadoSucesso){
+            res.status(200).json({ mensagem: 'Dados atualizados com sucesso.' });
+        }else{
+            res.status(404).json({ mensagem: 'Nenhum dado para atualizar.' });
+        }  
+        }catch(error){
+            console.error('Erro ao atualizar Agendamento:', error);
+            res.status(500).json({ mensagem: 'Erro interno no servidor.' });
+    } 
+}
+
+module.exports = { 
+    criarAgendamento, 
+    listarAgendamentos, 
+    listarAgendamentoCliente,
+    atualizarAgendamentoCliente,
+    atualizarAgendamentoVeterinario
+};

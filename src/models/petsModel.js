@@ -17,6 +17,29 @@ async function listarTodosPets(){
     return rows;
 }
     
+async function atualizarPet(idPet, dados){
+    let campos = [];
+    let valores = [];
+
+    for(let campo in dados){
+      if (dados[campo] !== undefined && dados[campo] !== null){
+        campos.push(`${campo} = ?`);
+        valores.push(dados[campo]);
+      }
+    }
+
+    if (campos.length === 0) return false;
+    valores.push(idPet);
+
+    const query = `
+    UPDATE pets
+    SET ${campos.join(', ')}
+    WHERE id_pet = ?
+    `;
+
+    const [result] = await pool.query(query, valores);
+    return result.affectedRows > 0;
+}
 
 
-module.exports = { criarPet, listarPetsPorCliente, listarTodosPets };
+module.exports = { criarPet, listarPetsPorCliente, listarTodosPets, atualizarPet };

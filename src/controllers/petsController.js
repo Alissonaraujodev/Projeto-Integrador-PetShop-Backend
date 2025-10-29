@@ -55,4 +55,64 @@ async function listarTodosPets(req, res) {
     
 }
 
-module.exports = { cadastrarPet, listarPetsPorCliente, listarTodosPets };
+async function atualizarPetCliente(req, res) {
+    const cpfCliente = req.session.userId;
+    const { id_pet } = req.params; 
+    const{ nome } = req.body;
+    
+    if (!cpfCliente) {
+        return res.status(401).json({ message: 'Acesso negado. Cliente não autenticado.' });
+    }
+
+    if (!id_pet) {
+        return res.status(400).json({ mensagem: 'ID do pet é obrigatório.' });
+    }
+  
+    try{
+        const atualizadoSucesso = await petModel.atualizarPet(id_pet, { nome });
+
+        if(atualizadoSucesso){
+            res.status(200).json({ mensagem: 'Dados atualizados com sucesso.' });
+        }else{
+            res.status(404).json({ mensagem: 'Nenhum dado para atualizar.' });
+        }  
+        }catch(error){
+            console.error('Erro ao atualizar Pet:', error);
+            res.status(500).json({ mensagem: 'Erro interno no servidor.' });
+    } 
+}
+
+async function atualizarPetVeterinario(req, res) {
+    const id_profissional_logado = req.session.userId;
+    const { id_pet } = req.params;
+    const{ peso_atual, castrado, observacoes_saude } = req.body;
+  
+    if (!id_pet) {
+        return res.status(400).json({ mensagem: 'ID do pet é obrigatório.' });
+    }
+
+    try{
+        const atualizadoSucesso = await petModel.atualizarPet(id_pet, {
+            peso_atual,
+            castrado,
+            observacoes_saude
+        });
+
+        if(atualizadoSucesso){
+            res.status(200).json({ mensagem: 'Dados atualizados com sucesso.' });
+        }else{
+            res.status(404).json({ mensagem: 'Nenhum dado para atualizar.' });
+        }  
+        }catch(error){
+            console.error('Erro ao atualizar Pet:', error);
+            res.status(500).json({ mensagem: 'Erro interno no servidor.' });
+    } 
+}
+
+module.exports = { 
+    cadastrarPet, 
+    listarPetsPorCliente, 
+    listarTodosPets, 
+    atualizarPetCliente,
+    atualizarPetVeterinario
+};

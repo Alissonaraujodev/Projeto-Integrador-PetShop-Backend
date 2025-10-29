@@ -74,8 +74,33 @@ async function listarAgendamentos(data, idProfissional, servico) {
     return rows;
 }
 
+async function atualizarAgendamento(idAgendamento, dados){
+    let campos = [];
+    let valores = [];
+
+    for(let campo in dados){
+      if (dados[campo] !== undefined && dados[campo] !== null){
+        campos.push(`${campo} = ?`);
+        valores.push(dados[campo]);
+      }
+    }
+
+    if (campos.length === 0) return false;
+    valores.push(idAgendamento);
+
+    const query = `
+    UPDATE agendamentos
+    SET ${campos.join(', ')}
+    WHERE id_agendamento = ?
+    `;
+
+    const [result] = await pool.query(query, valores);
+    return result.affectedRows > 0;
+}
+
 module.exports = { 
     criarAgendamento, 
     listarAgendamentoCliente, 
     listarAgendamentos,
+    atualizarAgendamento
 };

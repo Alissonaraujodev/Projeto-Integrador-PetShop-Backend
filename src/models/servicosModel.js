@@ -7,6 +7,17 @@ async function cadastrarServico(nome_servico, valor, categoria) {
   );
 }
 
+async function encontrarPorNome(nome_servico) {
+  const query = `
+    SELECT * FROM servicos
+    WHERE nome_servico = ?
+    LIMIT 1
+  `;
+
+  const [rows] = await pool.query(query, [nome_servico]);
+  return rows.length > 0 ? rows[0] : null;
+}
+
 async function listarServicos(nome_servico, categoria){
   let query = `
     SELECT 
@@ -33,4 +44,7 @@ async function listarServicos(nome_servico, categoria){
 
 
 
-module.exports = { cadastrarServico, listarServicos};
+module.exports = { 
+  cadastrarServico,
+  encontrarPorNome,
+  listarServicos};
