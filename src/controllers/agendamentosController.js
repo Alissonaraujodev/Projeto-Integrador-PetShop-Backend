@@ -66,7 +66,7 @@ async function listarAgendamentos(req, res) {
 async function atualizarAgendamentoCliente(req, res) {
     const cpfCliente = req.session.userId;
     const { id_agendamento } = req.params; 
-    const{ data_hora, id_servico } = req.body;
+    const{ id_pet, data_hora, id_servico } = req.body;
     
     if (!cpfCliente) {
         return res.status(401).json({ message: 'Acesso negado. Cliente não autenticado.' });
@@ -77,7 +77,7 @@ async function atualizarAgendamentoCliente(req, res) {
     }
   
     try{
-        const atualizadoSucesso = await agendamentoModel.atualizarAgendamento(id_agendamento, { data_hora, id_servico });
+        const atualizadoSucesso = await agendamentoModel.atualizarAgendamento(id_agendamento, { id_pet, data_hora, id_servico });
 
         if(atualizadoSucesso){
             res.status(200).json({ mensagem: 'Dados atualizados com sucesso.' });
