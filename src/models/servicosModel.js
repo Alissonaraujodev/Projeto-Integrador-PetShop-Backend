@@ -42,9 +42,35 @@ async function listarServicos(nome_servico, categoria){
     return rows;
 }
 
+async function atualizarServico(idServico, dados) {
+  let campos = [];
+  let valores = [];
+
+  for(let campo in dados){
+    if (dados[campo] !== undefined && dados[campo] !== null){
+      campos.push(`${campo} = ?`);
+      valores.push(dados[campo]);
+    }
+  }
+
+  if (campos.length === 0) return false;
+  valores.push(idServico);
+
+  const query = `
+    UPDATE servicos
+    SET ${campos.join(', ')}
+    WHERE id_servico = ?
+  `;
+
+  const [result] = await pool.query(query, valores);
+  return result.affectedRows > 0;
+}
+
 
 
 module.exports = { 
   cadastrarServico,
   encontrarPorNome,
-  listarServicos};
+  listarServicos,
+  atualizarServico
+};

@@ -42,4 +42,8 @@ async function atualizarPet(idPet, dados){
 }
 
 
-module.exports = { criarPet, listarPetsPorCliente, listarTodosPets, atualizarPet };
+module.exports = { 
+    criarPet, 
+    listarPetsPorCliente, 
+    listarTodosPets, 
+    atualizarPet };

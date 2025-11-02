@@ -1,7 +1,12 @@
 const servicoModel = require('../models/servicosModel');
 
 async function cadastrarServico(req, res) {
+  const id_profissional_logado = req.session.userId;
   const { nome_servico, valor, categoria } = req.body;
+
+  if (!id_profissional_logado) {
+    return res.status(401).json({ mensagem: 'Acesso negado. Funcionário não autenticado.' });
+  }
 
   try {
     const existente = await servicoModel.encontrarPorNome(nome_servico);
@@ -36,6 +41,38 @@ async function listarServicos(req, res) {
     }
 }
 
+async function atualizarServico(req, res) {
+  const id_profissional_logado = req.session.userId;
+  const { id_servico } = req.params;
+  const{ nome_servico, valor, categoria } = req.body;
+
+  if (!id_profissional_logado) {
+    return res.status(401).json({ mensagem: 'Acesso negado. Funcionário não autenticado.' });
+  }
+
+  if (!id_servico) {
+    return res.status(400).json({ mensagem: 'O ID do serviço é obrigatório para atualização.' });
+  }
+
+  try{
+
+    const dados = { nome_servico, valor, categoria };
+    const atualizadoSucesso = await servicoModel.atualizarServico(id_servico, dados);
+
+    if(atualizadoSucesso){
+        res.status(200).json({ mensagem: 'Dados atualizados com sucesso.' });
+    }else{
+        res.status(404).json({ mensagem: 'Nenhum dado para atualizar.' });
+      }  
+    }catch(error){
+        console.error('Erro ao atualizar serviço:', error);
+        res.status(500).json({ mensagem: 'Erro interno no servidor.' });
+    } 
+}
 
 
-module.exports = { cadastrarServico, listarServicos };
+module.exports = { 
+  cadastrarServico, 
+  listarServicos, 
+  atualizarServico
+};
