@@ -36,5 +36,24 @@ async function atualizarCliente(cpf, dados){
     return result.affectedRows > 0;
 }
 
+async function buscarClientePorCpf(cpf) {
+  const [rows] = await pool.query('SELECT * FROM clientes WHERE cpf = ?', [cpf]);
+  return rows[0];
+}
 
-module.exports = { encontrarPorEmail, cadastrarCliente, atualizarCliente };
+async function atualizarSenhaCliente(cpf, novaSenhaHash) {
+  const [result] = await pool.query(
+    'UPDATE clientes SET senha = ? WHERE cpf = ?',
+    [novaSenhaHash, cpf]
+  );
+  return result.affectedRows > 0;
+}
+
+
+module.exports = { 
+  encontrarPorEmail, 
+  cadastrarCliente, 
+  atualizarCliente,
+  buscarClientePorCpf,
+  atualizarSenhaCliente
+};

@@ -4,6 +4,8 @@ const clienteModel = require('../models/clientesModel');
 async function cadastrarCliente(req, res) {
   const { cpf, nome, email, senha, telefone, logradouro, numero, complemento, bairro, cidade, estado, cep } = req.body;
 
+  
+  
   try {
     const existente = await clienteModel.encontrarPorEmail(email);
     if (existente) {
@@ -75,4 +77,48 @@ async function atualizarCliente(req, res) {
   } 
 }
 
-module.exports = { cadastrarCliente, loginCliente, atualizarCliente };
+async function alterarSenhaCliente(req, res) {
+  const cpfCliente = req.session.userId; 
+  const { senha_atual, nova_senha } = req.body;
+
+  if (!cpfCliente) {
+    return res.status(401).json({ mensagem: 'Acesso negado. Cliente não autenticado.' });
+  }
+
+  if (!senha_atual || !nova_senha) {
+    return res.status(400).json({ mensagem: 'Senha atual e nova senha são obrigatórias.' });
+  }
+
+  try {
+    const cliente = await clienteModel.buscarClientePorCpf(cpfCliente);
+    if (!cliente) {
+      return res.status(404).json({ mensagem: 'Cliente não encontrado.' });
+    }
+
+    const senhaCorreta = await bcrypt.compare(senha_atual, cliente.senha);
+    if (!senhaCorreta) {
+      return res.status(401).json({ mensagem: 'Senha atual incorreta.' });
+    }
+
+    const novaSenhaHash = await bcrypt.hash(nova_senha, 10);
+
+    const atualizadoSucesso = await clienteModel.atualizarSenhaCliente(cpfCliente, novaSenhaHash);
+
+    if (atualizadoSucesso) {
+      res.status(200).json({ mensagem: 'Senha atualizada com sucesso.' });
+    } else {
+      res.status(500).json({ mensagem: 'Erro ao atualizar a senha.' });
+    }
+
+  } catch (error) {
+    console.error('Erro ao alterar senha:', error);
+    res.status(500).json({ mensagem: 'Erro interno no servidor.' });
+  }
+}
+
+module.exports = { 
+  cadastrarCliente, 
+  loginCliente, 
+  atualizarCliente,
+  alterarSenhaCliente
+};
