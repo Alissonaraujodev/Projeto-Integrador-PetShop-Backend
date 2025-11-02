@@ -1,10 +1,21 @@
 const bcrypt = require('bcrypt');
 const clienteModel = require('../models/clientesModel');
+const validarSenhaForte = require('../utils/validarSenha');
 
 async function cadastrarCliente(req, res) {
-  const { cpf, nome, email, senha, telefone, logradouro, numero, complemento, bairro, cidade, estado, cep } = req.body;
+  const { 
+    cpf, nome, email, senha, telefone, logradouro, numero, complemento, bairro, cidade, estado, cep 
+  } = req.body;
 
-  
+  if (!cpf|| !nome || !email || !senha || !telefone || !logradouro || !numero || !bairro || !cidade || !estado || !cep ) {
+    return res.status(400).json({ mensagem: 'Preencha todos os campos obrigatórios.' });
+  }
+
+  if (!validarSenhaForte(senha)) {
+    return res.status(400).json({
+      mensagem: 'A senha deve conter ao menos 8 caracteres, incluindo uma letra maiúscula, uma minúscula, um número e um caractere especial.'
+    });
+  }
   
   try {
     const existente = await clienteModel.encontrarPorEmail(email);
@@ -89,6 +100,12 @@ async function alterarSenhaCliente(req, res) {
     return res.status(400).json({ mensagem: 'Senha atual e nova senha são obrigatórias.' });
   }
 
+  if (!validarSenhaForte(nova_senha)) {
+    return res.status(400).json({
+      mensagem: 'A nova senha deve conter ao menos 8 caracteres, incluindo uma letra maiúscula, uma minúscula, um número e um caractere especial.'
+    });
+  }
+
   try {
     const cliente = await clienteModel.buscarClientePorCpf(cpfCliente);
     if (!cliente) {
@@ -101,7 +118,6 @@ async function alterarSenhaCliente(req, res) {
     }
 
     const novaSenhaHash = await bcrypt.hash(nova_senha, 10);
-
     const atualizadoSucesso = await clienteModel.atualizarSenhaCliente(cpfCliente, novaSenhaHash);
 
     if (atualizadoSucesso) {
