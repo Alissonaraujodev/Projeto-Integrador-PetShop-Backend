@@ -1,7 +1,7 @@
 const { pool } = require('../config/db');
 const { listarConsultaCliente } = require('./consultasModel');
 
-async function criarAgendamento(id_pet, id_servico, id_profissional, data_hora, observacoes) {
+async function criarAgendamento(id_pet, id_servico, id_profissional, data_hora, observacoes){
     await pool.query(
         'INSERT INTO agendamentos (id_pet, id_servico, id_profissional, data_hora, observacoes) VALUES (?, ?, ?, ?, ?)',
         [id_pet, id_servico, id_profissional, data_hora, observacoes]
@@ -98,9 +98,30 @@ async function atualizarAgendamento(idAgendamento, dados){
     return result.affectedRows > 0;
 }
 
+async function buscarAgendamentoPorId(idAgendamento) {
+  const [rows] = await pool.query(
+    'SELECT * FROM agendamentos WHERE id_agendamento = ?',
+    [idAgendamento]
+  );
+  return rows[0];
+}
+
+async function cancelarAgendamento(idAgendamento) {
+  const query = `
+    UPDATE agendamentos
+    SET status = 'cancelado'
+    WHERE id_agendamento = ?
+  `;
+
+  const [result] = await pool.query(query, [idAgendamento]);
+  return result.affectedRows > 0;
+}
+
 module.exports = { 
     criarAgendamento, 
     listarAgendamentoCliente, 
     listarAgendamentos,
-    atualizarAgendamento
+    atualizarAgendamento,
+    buscarAgendamentoPorId,
+    cancelarAgendamento
 };

@@ -22,7 +22,7 @@ async function criarAgendamento(req, res) {
 }
 
 async function listarAgendamentoCliente(req, res) {
-     const cpfCliente = req.session.userId; 
+    const cpfCliente = req.session.userId; 
 
     if (!cpfCliente) {
         return res.status(401).json({ message: 'Acesso negado. Cliente não autenticado.' });
@@ -77,6 +77,20 @@ async function atualizarAgendamentoCliente(req, res) {
     }
   
     try{
+        const agendamento = await agendamentoModel.buscarAgendamentoPorId(id_agendamento);
+
+         if (!agendamento) {
+            return res.status(404).json({ mensagem: 'Agendamento não encontrado.' });
+        }
+
+        if (agendamento.status === 'Concluído') {
+            return res.status(400).json({ mensagem: 'Não é possível alterar um agendamento já concluído.' });
+        }
+
+        if (agendamento.status === 'Cancelado') {
+            return res.status(400).json({ mensagem: 'Não é possível alterar um agendamento cancelado.' });
+        }
+
         const atualizadoSucesso = await agendamentoModel.atualizarAgendamento(id_agendamento, { id_pet, data_hora, id_servico });
 
         if(atualizadoSucesso){
@@ -100,7 +114,29 @@ async function atualizarAgendamentoVeterinario(req, res) {
     }
 
     try{
+        const agendamento = await agendamentoModel.buscarAgendamentoPorId(id_agendamento);
+
+         if (!agendamento) {
+            return res.status(404).json({ mensagem: 'Agendamento não encontrado.' });
+        }
+
+        if (agendamento.status === 'Concluído') {
+            return res.status(400).json({ mensagem: 'Não é possível alterar um agendamento já concluído.' });
+        }
+
+        if (agendamento.status === 'Cancelado') {
+            return res.status(400).json({ mensagem: 'Não é possível alterar um agendamento cancelado.' });
+        }
+        
         const atualizadoSucesso = await agendamentoModel.atualizarAgendamento(id_agendamento, {status});
+
+        if (agendamento.status === 'Concluído') {
+            return res.status(400).json({ mensagem: 'Não é possível cancelar um agendamento já concluído.' });
+        }
+
+        if (agendamento.status === 'Cancelado') {
+            return res.status(400).json({ mensagem: 'Este agendamento já foi cancelado.' });
+        }
 
         if(atualizadoSucesso){
             res.status(200).json({ mensagem: 'Dados atualizados com sucesso.' });
@@ -113,10 +149,55 @@ async function atualizarAgendamentoVeterinario(req, res) {
     } 
 }
 
+async function cancelarAgendamento(req, res) {
+  const id_profissional_logado = req.session.userId;
+  const cpfCliente = req.session.userId; 
+  const { id_agendamento } = req.params;
+
+  if (!id_profissional_logado && !cpfCliente) {
+    return res.status(401).json({ mensagem: 'Acesso negado.' });
+  }
+
+  if (!id_agendamento) {
+    return res.status(400).json({ mensagem: 'O ID do agendamento é obrigatório.' });
+  }
+
+  try {
+    const agendamento = await agendamentoModel.buscarAgendamentoPorId(id_agendamento);
+
+    if (!agendamento) {
+      return res.status(404).json({ mensagem: 'Agendamento não encontrado.' });
+    }
+
+    if (agendamento.status === 'Concluído') {
+      return res.status(400).json({ mensagem: 'Não é possível cancelar um agendamento já concluído.' });
+    }
+
+    if (agendamento.status === 'Cancelado') {
+      return res.status(400).json({ mensagem: 'Este agendamento já foi cancelado.' });
+    }
+
+    const canceladoSucesso = await agendamentoModel.cancelarAgendamento(id_agendamento);
+
+    if (canceladoSucesso) {
+      res.status(200).json({ mensagem: 'Agendamento cancelado com sucesso.' });
+    } else {
+      res.status(500).json({ mensagem: 'Erro ao cancelar o agendamento.' });
+    }
+
+  } catch (error) {
+    console.error('Erro ao cancelar agendamento:', error);
+    res.status(500).json({ mensagem: 'Erro interno no servidor.' });
+  }
+}
+
+
+
 module.exports = { 
     criarAgendamento, 
     listarAgendamentos, 
     listarAgendamentoCliente,
     atualizarAgendamentoCliente,
-    atualizarAgendamentoVeterinario
+    atualizarAgendamentoVeterinario,
+    cancelarAgendamento
 };

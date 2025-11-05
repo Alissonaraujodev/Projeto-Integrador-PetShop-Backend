@@ -8,6 +8,8 @@ router.get('/agendamentos', agendamentoController.listarAgendamentos);
 router.get('/agendamentos/historico', agendamentoController.listarAgendamentoCliente);
 router.put('/agendamento/atualizar-cliente/:id_agendamento', agendamentoController.atualizarAgendamentoCliente);
 router.put('/agendamento/atualizar-veterinario/:id_agendamento',autorizarVeterinario, agendamentoController.atualizarAgendamentoVeterinario);
+router.delete('/agendamento/cancelar/:id_agendamento', agendamentoController.cancelarAgendamento)
+
 
 
 module.exports = router;
