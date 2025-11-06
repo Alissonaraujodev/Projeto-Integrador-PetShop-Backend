@@ -5,6 +5,10 @@ async function criarConsulta(req, res) {
 
     const { id_agendamento, diagnostico, medicacao, peso_pet } = req.body;
 
+    if (!id_profissional_logado) {
+        return res.status(401).json({ mensagem: 'Acesso negado. Funcionário não autenticado.' });
+    }
+
     try {
         await consultaModel.criarConsulta(
             id_agendamento, diagnostico, medicacao, peso_pet
@@ -42,8 +46,11 @@ async function listarConsultaCliente(req, res){
 
 async function listarCunsultas(req, res) {
     const id_profissional_logado = req.session.userId;
-
     const { data, idProfissional } = req.query;  
+
+    if (!id_profissional_logado) {
+        return res.status(401).json({ mensagem: 'Acesso negado. Funcionário não autenticado.' });
+    }
 
     try {
         const consultas = await consultaModel.listarConsultas(
@@ -59,4 +66,8 @@ async function listarCunsultas(req, res) {
     }
 }
 
-module.exports = { criarConsulta, listarConsultaCliente, listarCunsultas };
+module.exports = { 
+    criarConsulta, 
+    listarConsultaCliente, 
+    listarCunsultas 
+};

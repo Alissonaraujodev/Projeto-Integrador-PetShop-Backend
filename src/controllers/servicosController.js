@@ -70,7 +70,6 @@ async function atualizarServico(req, res) {
     } 
 }
 
-
 module.exports = { 
   cadastrarServico, 
   listarServicos, 

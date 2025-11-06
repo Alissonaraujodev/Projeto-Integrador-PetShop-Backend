@@ -40,9 +40,9 @@ const sessionStore = new MySQLStore({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  clearExpired: true,         // limpa sessões expiradas
-  checkExpirationInterval: 900000, // limpa a cada 15 min
-  expiration: 3600000,        // 1 hora de validade
+  clearExpired: true,
+  checkExpirationInterval: 900000,
+  expiration: 3600000,
 });
 
 app.use(session({

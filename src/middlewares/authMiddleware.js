@@ -11,7 +11,7 @@ function autorizarVeterinario(req, res, next) {
     const cargosPermitidos = ['Veterinario', 'Administrador'];
 
     if (!cargo || !cargosPermitidos.includes(cargo)) {
-        return res.status(403).json({ message: 'Proibido. Apenas funcionários permitidos.' });
+        return res.status(403).json({ message: 'Proibido. Apenas funcionários autorizados.' });
     }
 
     next();
@@ -29,6 +29,10 @@ function autorizarAdministrador(req, res, next) {
     next();
 }
 
-module.exports = { autenticar, autorizarVeterinario, autorizarAdministrador };
+module.exports = { 
+  autenticar, 
+  autorizarVeterinario, 
+  autorizarAdministrador 
+};
 
 

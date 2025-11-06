@@ -49,7 +49,6 @@ async function atualizarSenhaFuncionario(id_profissional, novaSenhaHash) {
   return result.affectedRows > 0;
 }
 
-
 module.exports = { 
   encontrarPorEmail, 
   cadastrarFuncionario, 

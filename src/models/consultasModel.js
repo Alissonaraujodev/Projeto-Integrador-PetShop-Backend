@@ -1,5 +1,4 @@
 const { pool } = require('../config/db');
-//const { listarConsultaCliente } = require('../controllers/consultasController');
 
 async function criarConsulta(id_agendamento, diagnostico, medicacao, peso_pet) {
     await pool.query(
@@ -70,4 +69,8 @@ async function listarConsultas(data, idProfissional) {
     return rows;
 }
 
-module.exports = { criarConsulta, listarConsultaCliente, listarConsultas };
+module.exports = { 
+    criarConsulta, 
+    listarConsultaCliente, 
+    listarConsultas 
+};

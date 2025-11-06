@@ -41,9 +41,9 @@ async function atualizarPet(idPet, dados){
     return result.affectedRows > 0;
 }
 
-
 module.exports = { 
     criarPet, 
     listarPetsPorCliente, 
     listarTodosPets, 
-    atualizarPet };
+    atualizarPet 
+};

@@ -45,8 +45,12 @@ async function listarAgendamentoCliente(req, res) {
 }
 
 async function listarAgendamentos(req, res) {
-
+    const id_profissional_logado = req.session.userId;
     const { data, idProfissional, servico } = req.query;  
+
+    if (!id_profissional_logado) {
+        return res.status(401).json({ mensagem: 'Acesso negado. Funcionário não autenticado.' });
+    }
 
     try {
         const agendamentos = await agendamentoModel.listarAgendamentos(
@@ -108,6 +112,10 @@ async function atualizarAgendamentoVeterinario(req, res) {
     const id_profissional_logado = req.session.userId;
     const { id_agendamento } = req.params;
     const{ status } = req.body;
+
+    if (!id_profissional_logado) {
+        return res.status(401).json({ mensagem: 'Acesso negado. Funcionário não autenticado.' });
+    }
   
     if (!id_agendamento) {
         return res.status(400).json({ mensagem: 'ID do agendamento é obrigatório.' });
@@ -155,7 +163,7 @@ async function cancelarAgendamento(req, res) {
   const { id_agendamento } = req.params;
 
   if (!id_profissional_logado && !cpfCliente) {
-    return res.status(401).json({ mensagem: 'Acesso negado.' });
+    return res.status(401).json({ mensagem: 'Acesso negado, Faça login para poder acessar.' });
   }
 
   if (!id_agendamento) {
@@ -190,8 +198,6 @@ async function cancelarAgendamento(req, res) {
     res.status(500).json({ mensagem: 'Erro interno no servidor.' });
   }
 }
-
-
 
 module.exports = { 
     criarAgendamento, 

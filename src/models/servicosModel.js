@@ -66,8 +66,6 @@ async function atualizarServico(idServico, dados) {
   return result.affectedRows > 0;
 }
 
-
-
 module.exports = { 
   cadastrarServico,
   encontrarPorNome,

@@ -1,5 +1,4 @@
 const { pool } = require('../config/db');
-const { listarConsultaCliente } = require('./consultasModel');
 
 async function criarAgendamento(id_pet, id_servico, id_profissional, data_hora, observacoes){
     await pool.query(

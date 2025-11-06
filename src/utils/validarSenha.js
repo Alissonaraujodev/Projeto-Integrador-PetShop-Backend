@@ -3,4 +3,6 @@ function validarSenhaForte(senha) {
   return regex.test(senha);
 }
 
-module.exports = validarSenhaForte;
+module.exports = {
+  validarSenhaForte
+};

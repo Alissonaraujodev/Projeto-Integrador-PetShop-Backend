@@ -27,15 +27,14 @@ if (env === 'production') {
 
 const pool = mysql.createPool(dbConfig);
 
-// Testa a conexão ao iniciar o módulo
 pool.getConnection()
   .then(connection => {
     console.log('Conectado ao banco de dados MySQL!');
-    connection.release(); // Libera a conexão de volta para o pool
+    connection.release();
   })
   .catch(err => {
     console.error('Erro inesperado na conexão com o banco de dados MySQL:', err);
-    process.exit(-1); // Encerra o processo da aplicação em caso de erro crítico de conexão
+    process.exit(-1);
   });
 
 module.exports = {pool, dbConfig};

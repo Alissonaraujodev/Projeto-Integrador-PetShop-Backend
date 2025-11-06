@@ -49,7 +49,6 @@ async function atualizarSenhaCliente(cpf, novaSenhaHash) {
   return result.affectedRows > 0;
 }
 
-
 module.exports = { 
   encontrarPorEmail, 
   cadastrarCliente, 
