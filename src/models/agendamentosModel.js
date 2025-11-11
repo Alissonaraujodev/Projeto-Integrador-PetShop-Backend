@@ -116,11 +116,38 @@ async function cancelarAgendamento(idAgendamento) {
   return result.affectedRows > 0;
 }
 
+async function listarHorarioAgendamentos(data_hora){
+    const [rows] = await pool.query(
+        'SELECT * FROM agendamentos WHERE data_hora = ?',
+        [data_hora]
+    );
+    return rows[0];
+}
+
+async function listarProfissionalEHorarioAgendamentos(id_profissional, data_hora) {
+  const [rows] = await pool.query(
+    `SELECT 
+        a.id_agendamento,
+        a.data_hora,
+        a.id_servico,
+        p.id_profissional,
+        p.nome AS nome_profissional
+     FROM agendamentos a
+     JOIN funcionarios p ON a.id_profissional = p.id_profissional
+     WHERE a.id_profissional = ? AND a.data_hora = ?`,
+    [id_profissional, data_hora]
+  );
+  return rows[0];
+}
+
+
 module.exports = { 
     criarAgendamento, 
     listarAgendamentoCliente, 
     listarAgendamentos,
     atualizarAgendamento,
     buscarAgendamentoPorId,
-    cancelarAgendamento
+    cancelarAgendamento,
+    listarHorarioAgendamentos,
+    listarProfissionalEHorarioAgendamentos
 };

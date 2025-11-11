@@ -1,19 +1,33 @@
 const agendamentoModel = require('../models/agendamentosModel');
+const agendamentoService = require('../service/agendamentosService')
 
 async function criarAgendamento(req, res) {
     const cpfCliente = req.session.userId;
- 
+
     if (!cpfCliente) {
         return res.status(401).json({ message: 'Acesso negado. Cliente não autenticado.' });
     }
 
     const { id_pet, id_servico, id_profissional, data_hora,  observacoes } = req.body;
 
-    try {
-        await agendamentoModel.criarAgendamento(
-            id_pet, id_servico, id_profissional, data_hora, observacoes
-        );
+    if (!id_pet || !id_servico || !id_profissional || !data_hora) {
+        return res.status(400).json({ message: 'Campos obrigatórios não preenchidos.' });
+    } 
 
+    try {
+
+        const horarioDisponivel = await agendamentoService.verificarHorarioDisponivel(data_hora);
+        const profissionalDisponivel = await agendamentoService.verificarProfissionalDisponivel(id_profissional, data_hora);
+
+        if (!horarioDisponivel) {
+            return res.status(400).json({ message: 'Horário indisponível.' });
+        }
+        
+        if (!profissionalDisponivel) {
+            return res.status(400).json({ message: 'Profissional indisponível.' });
+        }
+        
+        await agendamentoModel.criarAgendamento(id_pet, id_servico, id_profissional, data_hora, observacoes);
         res.status(201).json({ message: 'Agendamento realizado com sucesso!' });
     } catch (error) {
         console.error('Erro ao fazer agendamento:', error);
