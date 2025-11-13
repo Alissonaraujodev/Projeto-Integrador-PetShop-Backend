@@ -141,6 +141,8 @@ async function listarProfissionalEHorarioAgendamentos(id_profissional, data_hora
 }
 
 
+
+
 module.exports = { 
     criarAgendamento, 
     listarAgendamentoCliente, 

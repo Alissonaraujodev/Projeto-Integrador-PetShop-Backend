@@ -1,5 +1,6 @@
 const agendamentoModel = require('../models/agendamentosModel');
 const agendamentoService = require('../service/agendamentosService')
+const servicoProfissionalService = require('../service/servicosProfissionalService')
 
 async function criarAgendamento(req, res) {
     const cpfCliente = req.session.userId;
@@ -16,12 +17,7 @@ async function criarAgendamento(req, res) {
 
     try {
 
-        const horarioDisponivel = await agendamentoService.verificarHorarioDisponivel(data_hora);
         const profissionalDisponivel = await agendamentoService.verificarProfissionalDisponivel(id_profissional, data_hora);
-
-        if (!horarioDisponivel) {
-            return res.status(400).json({ message: 'Horário indisponível.' });
-        }
         
         if (!profissionalDisponivel) {
             return res.status(400).json({ message: 'Profissional indisponível.' });
