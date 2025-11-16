@@ -9,22 +9,31 @@ async function criarAgendamento(req, res) {
         return res.status(401).json({ message: 'Acesso negado. Cliente não autenticado.' });
     }
 
-    const { id_pet, id_servico, id_profissional, data_hora,  observacoes } = req.body;
+    let { id_pet, id_servico, id_profissional, data_hora,  observacoes } = req.body;
 
-    if (!id_pet || !id_servico || !id_profissional || !data_hora) {
+    if (!id_pet || !id_servico || !data_hora) {
         return res.status(400).json({ message: 'Campos obrigatórios não preenchidos.' });
     } 
 
     try {
+    
+        if (!id_profissional) {
+            const profissionaisLivres = await servicoProfissionalService.listarProfissionaisDisponiveisPorServico(id_servico, data_hora);
 
-        const profissionalDisponivel = await agendamentoService.verificarProfissionalDisponivel(id_profissional, data_hora);
-        
-        if (!profissionalDisponivel) {
-            return res.status(400).json({ message: 'Profissional indisponível.' });
+        if (profissionaisLivres.length === 0) {
+            return res.status(400).json({ message: 'Nenhum profissional disponível para esse serviço e horário.' });
         }
-        
+            id_profissional = profissionaisLivres[0].id_profissional;
+        } else {
+            const disponivel = await agendamentoService.verificarProfissionalDisponivel(id_profissional, data_hora);
+            if (!disponivel) {
+                return res.status(400).json({ message: 'Profissional indisponível nesse horário.' });
+            }
+        }
+
         await agendamentoModel.criarAgendamento(id_pet, id_servico, id_profissional, data_hora, observacoes);
         res.status(201).json({ message: 'Agendamento realizado com sucesso!' });
+
     } catch (error) {
         console.error('Erro ao fazer agendamento:', error);
         res.status(500).json({ message: 'Erro interno ao fazer agendamento.' });

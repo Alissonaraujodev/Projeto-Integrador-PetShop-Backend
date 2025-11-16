@@ -116,7 +116,7 @@ async function cancelarAgendamento(idAgendamento) {
   return result.affectedRows > 0;
 }
 
-async function listarHorarioAgendamentos(data_hora){
+async function verificarHorarioDisponivel(data_hora){
     const [rows] = await pool.query(
         'SELECT * FROM agendamentos WHERE data_hora = ?',
         [data_hora]
@@ -124,7 +124,7 @@ async function listarHorarioAgendamentos(data_hora){
     return rows[0];
 }
 
-async function listarProfissionalEHorarioAgendamentos(id_profissional, data_hora) {
+async function verificarProfissionalDisponivel(id_profissional, data_hora) {
   const [rows] = await pool.query(
     `SELECT 
         a.id_agendamento,
@@ -140,9 +140,6 @@ async function listarProfissionalEHorarioAgendamentos(id_profissional, data_hora
   return rows[0];
 }
 
-
-
-
 module.exports = { 
     criarAgendamento, 
     listarAgendamentoCliente, 
@@ -150,6 +147,6 @@ module.exports = {
     atualizarAgendamento,
     buscarAgendamentoPorId,
     cancelarAgendamento,
-    listarHorarioAgendamentos,
-    listarProfissionalEHorarioAgendamentos
+    verificarHorarioDisponivel,
+    verificarProfissionalDisponivel
 };

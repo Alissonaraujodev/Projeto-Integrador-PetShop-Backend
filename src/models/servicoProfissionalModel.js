@@ -21,6 +21,7 @@ async function listarProfissionaisDisponiveisPorServico(id_servico, data_hora) {
   return rows;
 }
 
+
 module.exports = { 
     servicoProfissional,
     listarProfissionaisDisponiveisPorServico

@@ -5,6 +5,7 @@ async function listarProfissionaisDisponiveisPorServico(id_servico, data_hora) {
   return profissionais;
 }
 
+
 module.exports = {
     listarProfissionaisDisponiveisPorServico
 }
