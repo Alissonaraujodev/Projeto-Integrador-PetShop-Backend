@@ -1,5 +1,4 @@
 const mysql = require('mysql2/promise');
-const fs = require('fs');
 
 const env = process.env.NODE_ENV || 'development';
 let dbConfig;
@@ -11,9 +10,7 @@ if (env === 'production') {
     password: process.env.DB_PASSWORD_PROD,
     port: parseInt(process.env.DB_PORT_PROD),
     database: process.env.DB_NAME_PROD,
-    ssl: {
-      ca: fs.readFileSync(path.join(__dirname, 'src/config/ca.pem')),
-    }
+    ssl: { rejectUnauthorized: true }
   };
 }else{
   dbConfig = {
