@@ -1,4 +1,5 @@
 const mysql = require('mysql2/promise');
+const fs = require('fs');
 
 const env = process.env.NODE_ENV || 'development';
 let dbConfig;
