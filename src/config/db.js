@@ -11,7 +11,7 @@ if (env === 'production') {
     port: parseInt(process.env.DB_PORT_PROD),
     database: process.env.DB_NAME_PROD,
     ssl: {
-      ca: fs.readFileSync(path.join(__dirname, 'ca.pem'))
+      ca: fs.readFileSync(path.join(__dirname, 'src/config/ca.pem')),
     }
   };
 }else{
