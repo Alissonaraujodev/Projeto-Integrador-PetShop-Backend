@@ -33,7 +33,6 @@ const consultasRoutes = require('./src/routes/consultasRoutes')
 const verificacaoRoutes = require('./src/routes/verificacaoRoutes');
 const servicoProfissionalRoutes = require('./src/routes/servicoProfissionalRoutes')
 
-app.use(cors());
 app.use(express.json());
 
 const sessionStore = new MySQLStore({
@@ -72,7 +71,7 @@ app.get('/session-test', (req, res) => {
 
 app.get('/api/test-db', async (req, res) => {
     try {
-        const [result] = await db.query('SELECT 1+1 AS solution');
+        const [result] = await db.pool.query('SELECT 1+1 AS solution');
         res.status(200).json({
             message: 'Conexão com o banco de dados bem-sucedida!',
             solution: result[0].solution
