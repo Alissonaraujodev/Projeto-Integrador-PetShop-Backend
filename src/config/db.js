@@ -9,7 +9,10 @@ if (env === 'production') {
     user: process.env.DB_USER_PROD,
     password: process.env.DB_PASSWORD_PROD,
     port: parseInt(process.env.DB_PORT_PROD),
-    database: process.env.DB_NAME_PROD
+    database: process.env.DB_NAME_PROD,
+    ssl: {
+      rejectUnauthorized: false
+    }
   };
 }else{
   dbConfig = {
