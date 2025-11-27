@@ -3,13 +3,16 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
+const env = process.env.NODE_ENV || 'development';
 const MySQLStore = require('express-mysql-session')(session);
 const db = require('./src/config/db');
 const app = express();
 const port = process.env.PORT || 3000;
 
+
 const allowedOrigins = [
-  'http://localhost:5173'
+  'http://localhost:5173',
+  'https://projeto-integrador-petshop-frontend.onrender.com'
 ];
 
 const corsOptions = {
@@ -22,7 +25,11 @@ const corsOptions = {
   },
   optionsSuccessStatus: 200 
 };
-app.use(cors(corsOptions));
+//app.use(cors(corsOptions));
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
 
 const funcionariosRoutes = require('./src/routes/funcionariosRoutes');
 const clientesRoutes = require('./src/routes/clientesRoutes');
@@ -36,11 +43,11 @@ const servicoProfissionalRoutes = require('./src/routes/servicoProfissionalRoute
 app.use(express.json());
 
 const sessionStore = new MySQLStore({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT || 3306,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: env === "production" ? process.env.DB_HOST_PROD : process.env.DB_HOST,
+  port: env === "production" ? process.env.DB_PORT_PROD : process.env.DB_PORT,
+  user: env === "production" ? process.env.DB_USER_PROD : process.env.DB_USER,
+  password: env === "production" ? process.env.DB_PASSWORD_PROD : process.env.DB_PASSWORD,
+  database: env === "production" ? process.env.DB_NAME_PROD : process.env.DB_NAME,
   clearExpired: true,
   checkExpirationInterval: 900000,
   expiration: 3600000,

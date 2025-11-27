@@ -24,6 +24,10 @@ if (env === 'production') {
   };
 }
 
+dbConfig.ssl = {
+  rejectUnauthorized: false
+};
+
 const pool = mysql.createPool(dbConfig);
 
 pool.getConnection()

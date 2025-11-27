@@ -53,6 +53,7 @@ async function loginFuncionario(req, res) {
 
     res.json({ 
       message: 'Login realizado com sucesso!',
+      id: funcionario.id_profissional,
       tipo: 'funcionario',
       nome: funcionario.nome,
       cargo: funcionario.cargo

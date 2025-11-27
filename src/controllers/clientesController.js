@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const clienteModel = require('../models/clientesModel');
-const validarSenhaForte = require('../utils/validarSenha');
+const { validarSenhaForte } = require('../utils/validarSenha');
 
 async function cadastrarCliente(req, res) {
   const { 
@@ -52,6 +52,7 @@ async function loginCliente(req, res) {
     res.json({ 
       message: 'Login realizado com sucesso!',
       tipo: 'cliente',
+      id: cliente.id_cliente,
       nome: cliente.nome
     });
   } catch (error) {
