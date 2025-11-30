@@ -1,43 +1,29 @@
 const mysql = require('mysql2/promise');
 
-const env = process.env.NODE_ENV || 'development';
+const env = 'development'; 
 let dbConfig;
- 
-if (env === 'production') {
-  dbConfig ={
-    host: process.env.DB_HOST_PROD,
-    user: process.env.DB_USER_PROD,
-    password: process.env.DB_PASSWORD_PROD,
-    port: parseInt(process.env.DB_PORT_PROD),
-    database: process.env.DB_NAME_PROD
-  };
-}else{
-  dbConfig = {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
-  };
-}
 
-dbConfig.ssl = {
-  rejectUnauthorized: false
+dbConfig = {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: parseInt(process.env.DB_PORT), 
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 };
 
 const pool = mysql.createPool(dbConfig);
 
 pool.getConnection()
   .then(connection => {
-    console.log('Conectado ao banco de dados MySQL!');
+    console.log('Conectado ao banco de dados MySQL local!');
     connection.release();
   })
   .catch(err => {
-    console.error('Erro inesperado na conexão com o banco de dados MySQL:', err);
+    console.error('Erro ao conectar com o banco de dados local:', err);
     process.exit(-1);
-  });
+});
 
 module.exports = {pool, dbConfig};

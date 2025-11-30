@@ -1,11 +1,11 @@
 const petModel = require('../models/petsModel');
 
 async function cadastrarPet(req, res) {
-    const cpfCliente = req.session.userId;
+    const cpfCliente = req.user.cpf;
  
-    if (!cpfCliente) {
+    /*if (!cpfCliente) {
         return res.status(401).json({ message: 'Acesso negado. Cliente não autenticado.' });
-    }
+    }*/
 
     const { nome, especie, raca, peso_atual, porte, sexo, castrado, data_nascimento, observacoes_saude } = req.body;
 

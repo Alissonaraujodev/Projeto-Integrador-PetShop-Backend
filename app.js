@@ -2,110 +2,47 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
-const session = require('express-session');
-const env = process.env.NODE_ENV || 'development';
-const MySQLStore = require('express-mysql-session')(session);
 const db = require('./src/config/db');
 const app = express();
 const port = process.env.PORT || 3000;
 
-
 const allowedOrigins = [
-  'http://localhost:5173',
-  'https://projeto-integrador-petshop-frontend.onrender.com'
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "http://localhost:5500",
+  "http://127.0.0.1:5500",
+  "http://localhost",
+  "http://127.0.0.1"
 ];
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS policy'));
-    }
-  },
-  optionsSuccessStatus: 200 
-};
-//app.use(cors(corsOptions));
 app.use(cors({
-  origin: true,
-  credentials: true
-}));
 
-const funcionariosRoutes = require('./src/routes/funcionariosRoutes');
-const clientesRoutes = require('./src/routes/clientesRoutes');
-const petRoutes = require('./src/routes/petsRoutes');
-const servicosRoutes = require('./src/routes/servicosRoutes');
-const agendamentosRoutes = require('./src/routes/agendamentosRoutes');
-const consultasRoutes = require('./src/routes/consultasRoutes')
-const verificacaoRoutes = require('./src/routes/verificacaoRoutes');
-const servicoProfissionalRoutes = require('./src/routes/servicoProfissionalRoutes')
+   origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'), false);
+    }
+   },
+   credentials: false, 
+   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+   allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-const sessionStore = new MySQLStore({
-  host: env === "production" ? process.env.DB_HOST_PROD : process.env.DB_HOST,
-  port: env === "production" ? process.env.DB_PORT_PROD : process.env.DB_PORT,
-  user: env === "production" ? process.env.DB_USER_PROD : process.env.DB_USER,
-  password: env === "production" ? process.env.DB_PASSWORD_PROD : process.env.DB_PASSWORD,
-  database: env === "production" ? process.env.DB_NAME_PROD : process.env.DB_NAME,
-  clearExpired: true,
-  checkExpirationInterval: 900000,
-  expiration: 3600000,
-});
-
-app.use(session({
-  key: 'session_cookie_name',
-  secret: process.env.SESSION_SECRET,      
-  store: sessionStore, 
-  resave: false,                           
-  saveUninitialized: false,               
-  cookie: {
-    maxAge: parseInt(process.env.SESSION_MAXAGE) || 3600000, 
-    secure: process.env.NODE_ENV === 'production',           
-    httpOnly: true,                                          
-  },
-}));
-
-app.get('/session-test', (req, res) => {
-  if (!req.session.views) {
-    req.session.views = 1;
-  } else {
-    req.session.views++;
-  }
-
-  res.send(`Você visitou esta página ${req.session.views} vezes.`);
-});
-
-app.get('/api/test-db', async (req, res) => {
-    try {
-        const [result] = await db.pool.query('SELECT 1+1 AS solution');
-        res.status(200).json({
-            message: 'Conexão com o banco de dados bem-sucedida!',
-            solution: result[0].solution
-        });
-    } catch (error) {
-        console.error('Erro ao testar conexão com o banco de dados:', error);
-        res.status(500).json({
-            message: 'Erro ao conectar ao banco de dados',
-            error: error.message
-        });
-    }
-});
-
-app.use('/', funcionariosRoutes);
-app.use('/', clientesRoutes);
-app.use('/', petRoutes);
-app.use('/', servicosRoutes);
-app.use('/', agendamentosRoutes);
-app.use('/', consultasRoutes);
-app.use('/', verificacaoRoutes);
-app.use('/', servicoProfissionalRoutes);
-
-app.get('/', (req, res) => {
-  res.send('Bem-vindo ao seu sistema de gestão! O back-end está funcionando.');
-});
+app.use('/', require('./src/routes/funcionariosRoutes'));
+app.use('/', require('./src/routes/clientesRoutes'));
+app.use('/', require('./src/routes/petsRoutes'));
+app.use('/', require('./src/routes/servicosRoutes'));
+app.use('/', require('./src/routes/agendamentosRoutes'));
+app.use('/', require('./src/routes/consultasRoutes'));
+app.use('/', require('./src/routes/verificacaoRoutes'));
+app.use('/', require('./src/routes/servicoProfissionalRoutes'));
 
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);
-  console.log('Pressione CTRL+C para parar o servidor.');
 });

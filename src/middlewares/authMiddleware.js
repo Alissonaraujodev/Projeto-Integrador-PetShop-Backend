@@ -1,12 +1,7 @@
-function autenticar(req, res, next) {
-  if (req.session && req.session.userId) {
-    return next();
-  }
-  return res.status(401).json({ message: 'Acesso negado. Faça login primeiro.' });
-}
+const jwt = require('jsonwebtoken');
 
 function autorizarVeterinario(req, res, next) {
-    const cargo = req.session.userCargo; 
+    const cargo = req.user.cargo; 
   
     const cargosPermitidos = ['Veterinario', 'Administrador'];
 
@@ -18,7 +13,7 @@ function autorizarVeterinario(req, res, next) {
 }
 
 function autorizarAdministrador(req, res, next) {
-    const cargo = req.session.userCargo; 
+    const cargo = req.user.cargo; 
   
     const cargosPermitidos = ['Administrador'];
 
@@ -29,10 +24,22 @@ function autorizarAdministrador(req, res, next) {
     next();
 }
 
-module.exports = { 
-  autenticar, 
+function autenticarToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; 
+    if (token == null) return res.status(401).json({ message: 'Acesso negado. Token não fornecido.' });
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) return res.status(403).json({ message: 'Token inválido ou expirado.' }); 
+        req.user = user; 
+        next();
+    });
+}
+
+module.exports = {  
   autorizarVeterinario, 
-  autorizarAdministrador 
+  autorizarAdministrador,
+  autenticarToken
 };
 
 

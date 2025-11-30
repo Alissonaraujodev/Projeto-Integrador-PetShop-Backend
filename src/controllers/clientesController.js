@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const clienteModel = require('../models/clientesModel');
 const { validarSenhaForte } = require('../utils/validarSenha');
 
@@ -38,6 +39,7 @@ async function loginCliente(req, res) {
 
   try {
     const cliente = await clienteModel.encontrarPorEmail(email);
+
     if (!cliente) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
     }
@@ -46,15 +48,28 @@ async function loginCliente(req, res) {
     if (!senhaValida) {
       return res.status(401).json({ message: 'Senha incorreta' });
     }
-
-    req.session.userId = cliente.cpf;
-
+    
+    const token = jwt.sign(
+      { 
+        userId: cliente.id_cliente, 
+        cpf: cliente.cpf,
+        cargo: 'cliente'
+      },
+      process.env.JWT_SECRET,
+      { 
+        expiresIn: '1d' 
+      }
+    );
+    //console.log("Token Gerado:", token.substring(0, 20) + '...');
+    //console.log(`Login JWT realizado com sucesso para: ${cliente.cpf}`);
+    
     res.json({ 
       message: 'Login realizado com sucesso!',
-      tipo: 'cliente',
       id: cliente.id_cliente,
-      nome: cliente.nome
+      nome: cliente.nome,
+      token: token 
     });
+    
   } catch (error) {
     console.error('Erro ao fazer login:', error);
     res.status(500).json({ message: 'Erro interno no servidor' });
