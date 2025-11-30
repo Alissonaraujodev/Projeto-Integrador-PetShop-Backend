@@ -2,9 +2,9 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
-const db = require('./src/config/db');
 const app = express();
 const port = process.env.PORT || 3000;
+const db = require('./src/config/db');
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -34,14 +34,14 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/', require('./src/routes/funcionariosRoutes'));
+//app.use('/', require('./src/routes/funcionariosRoutes'));
 app.use('/', require('./src/routes/clientesRoutes'));
-app.use('/', require('./src/routes/petsRoutes'));
-app.use('/', require('./src/routes/servicosRoutes'));
-app.use('/', require('./src/routes/agendamentosRoutes'));
-app.use('/', require('./src/routes/consultasRoutes'));
-app.use('/', require('./src/routes/verificacaoRoutes'));
-app.use('/', require('./src/routes/servicoProfissionalRoutes'));
+//app.use('/', require('./src/routes/petsRoutes'));
+//app.use('/', require('./src/routes/servicosRoutes'));
+//app.use('/', require('./src/routes/agendamentosRoutes'));
+//app.use('/', require('./src/routes/consultasRoutes'));
+//app.use('/', require('./src/routes/verificacaoRoutes'));
+//app.use('/', require('./src/routes/servicoProfissionalRoutes'));
 
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);

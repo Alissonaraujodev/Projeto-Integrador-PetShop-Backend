@@ -34,7 +34,7 @@ async function cadastrarCliente(req, res) {
   }
 }
 
-async function loginCliente(req, res) {
+async function loginClienteNovo(req, res) {
   const { email, senha } = req.body;
 
   try {
@@ -48,10 +48,10 @@ async function loginCliente(req, res) {
     if (!senhaValida) {
       return res.status(401).json({ message: 'Senha incorreta' });
     }
-    
+
+    console.log('JWT_SECRET existe:', !!process.env.JWT_SECRET);
     const token = jwt.sign(
       { 
-        userId: cliente.id_cliente, 
         cpf: cliente.cpf,
         cargo: 'cliente'
       },
@@ -60,14 +60,15 @@ async function loginCliente(req, res) {
         expiresIn: '1d' 
       }
     );
-    //console.log("Token Gerado:", token.substring(0, 20) + '...');
-    //console.log(`Login JWT realizado com sucesso para: ${cliente.cpf}`);
+
+    console.log('TOKEN GERADO COM SUCESSO:', token);
     
-    res.json({ 
+    res.status(200).json({ 
       message: 'Login realizado com sucesso!',
-      id: cliente.id_cliente,
+      token: token, 
+      cpf: cliente.cpf,
       nome: cliente.nome,
-      token: token 
+      
     });
     
   } catch (error) {
@@ -77,7 +78,7 @@ async function loginCliente(req, res) {
 }
 
 async function atualizarCliente(req, res) {
-  const cpfCliente = req.session.userId; 
+  const cpfCliente = req.user.cpf; 
 
   if (!cpfCliente) {
         return res.status(401).json({ message: 'Acesso negado. Cliente não autenticado.' });
@@ -105,7 +106,7 @@ async function atualizarCliente(req, res) {
 }
 
 async function alterarSenhaCliente(req, res) {
-  const cpfCliente = req.session.userId; 
+  const cpfCliente = req.user.cpf; 
   const { senha_atual, nova_senha } = req.body;
 
   if (!cpfCliente) {
@@ -150,7 +151,7 @@ async function alterarSenhaCliente(req, res) {
 
 module.exports = { 
   cadastrarCliente, 
-  loginCliente, 
+  loginCliente: loginClienteNovo, 
   atualizarCliente,
   alterarSenhaCliente
 };
