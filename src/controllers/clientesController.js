@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const clienteModel = require('../models/clientesModel');
 const { validarSenhaForte } = require('../utils/validarSenha');
 
@@ -30,49 +29,6 @@ async function cadastrarCliente(req, res) {
     res.status(201).json({ message: 'Cliente cadastrado com sucesso!' });
   } catch (error) {
     console.error('Erro ao cadastrar Cliente:', error);
-    res.status(500).json({ message: 'Erro interno no servidor' });
-  }
-}
-
-async function loginClienteNovo(req, res) {
-  const { email, senha } = req.body;
-
-  try {
-    const cliente = await clienteModel.encontrarPorEmail(email);
-
-    if (!cliente) {
-      return res.status(404).json({ message: 'Usuário não encontrado' });
-    }
-
-    const senhaValida = await bcrypt.compare(senha, cliente.senha);
-    if (!senhaValida) {
-      return res.status(401).json({ message: 'Senha incorreta' });
-    }
-
-    console.log('JWT_SECRET existe:', !!process.env.JWT_SECRET);
-    const token = jwt.sign(
-      { 
-        cpf: cliente.cpf,
-        cargo: 'cliente'
-      },
-      process.env.JWT_SECRET,
-      { 
-        expiresIn: '1d' 
-      }
-    );
-
-    console.log('TOKEN GERADO COM SUCESSO:', token);
-    
-    res.status(200).json({ 
-      message: 'Login realizado com sucesso!',
-      token: token, 
-      cpf: cliente.cpf,
-      nome: cliente.nome,
-      
-    });
-    
-  } catch (error) {
-    console.error('Erro ao fazer login:', error);
     res.status(500).json({ message: 'Erro interno no servidor' });
   }
 }
@@ -151,7 +107,6 @@ async function alterarSenhaCliente(req, res) {
 
 module.exports = { 
   cadastrarCliente, 
-  loginCliente: loginClienteNovo, 
   atualizarCliente,
   alterarSenhaCliente
 };

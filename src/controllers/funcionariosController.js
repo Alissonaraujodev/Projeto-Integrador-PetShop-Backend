@@ -34,36 +34,6 @@ async function cadastrarFuncionario(req, res) {
   }
 }
 
-async function loginFuncionario(req, res) {
-  const { email, senha } = req.body;
-
-  try {
-    const funcionario = await funcionarioModel.encontrarPorEmail(email);
-    if (!funcionario) {
-      return res.status(404).json({ message: 'Usuário não encontrado' });
-    }
-
-    const senhaValida = await bcrypt.compare(senha, funcionario.senha);
-    if (!senhaValida) {
-      return res.status(401).json({ message: 'Senha incorreta' });
-    }
-
-    req.session.userId = funcionario.id_profissional;
-    req.session.userCargo = funcionario.cargo;
-
-    res.json({ 
-      message: 'Login realizado com sucesso!',
-      id: funcionario.id_profissional,
-      tipo: 'funcionario',
-      nome: funcionario.nome,
-      cargo: funcionario.cargo
-    });
-  } catch (error) {
-    console.error('Erro ao fazer login:', error);
-    res.status(500).json({ message: 'Erro interno no servidor' });
-  }
-}
-
 async function atualizarFuncionario(req, res) {
   const id_profissional_logado = req.session.userId;
 
@@ -139,7 +109,6 @@ async function alterarSenhaFuncionario(req, res) {
 
 module.exports = { 
   cadastrarFuncionario, 
-  loginFuncionario, 
   atualizarFuncionario,
   alterarSenhaFuncionario
 };
