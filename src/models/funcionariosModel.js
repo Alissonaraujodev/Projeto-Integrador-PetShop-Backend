@@ -45,7 +45,6 @@ async function atualizarSenhaFuncionario(id_profissional, novaSenhaHash) {
 }
 
 module.exports = { 
-  //encontrarPorEmail, 
   cadastrarFuncionario, 
   atualizarFuncionario, 
   buscarFuncionarioPorId, 

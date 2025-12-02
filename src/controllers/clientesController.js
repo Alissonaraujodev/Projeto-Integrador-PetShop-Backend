@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const clienteModel = require('../models/clientesModel');
+const loginModel = require('../models/loginModel')
 const { validarSenhaForte } = require('../utils/validarSenha');
 
 async function cadastrarCliente(req, res) {
@@ -18,7 +19,7 @@ async function cadastrarCliente(req, res) {
   }
   
   try {
-    const existente = await clienteModel.encontrarPorEmail(email);
+    const existente = await loginModel.encontrarClientePorEmail(email);
     if (existente) {
       return res.status(400).json({ message: 'Email já cadastrado' });
     }

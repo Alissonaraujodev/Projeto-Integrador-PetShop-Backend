@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const funcionarioModel = require('../models/funcionariosModel');
+const loginModel = require('../models/loginModel')
 const validarSenhaForte = require('../utils/validarSenha');
 
 async function cadastrarFuncionario(req, res) {
@@ -17,7 +18,7 @@ async function cadastrarFuncionario(req, res) {
   }
 
   try {
-    const existente = await funcionarioModel.encontrarPorEmail(email);
+    const existente = await loginModel.encontrarFuncionarioPorEmail(email);
     if (existente) {
       return res.status(400).json({ message: 'Email já cadastrado' });
     }
