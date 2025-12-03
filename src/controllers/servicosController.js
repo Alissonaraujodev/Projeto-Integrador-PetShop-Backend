@@ -25,12 +25,13 @@ async function cadastrarServico(req, res) {
 
 async function listarServicos(req, res) {
 
-    const { nome_servico, categoria } = req.query;  
+    const { nome_servico, categoria, valor } = req.query;  
 
     try {
         const servicos = await servicoModel.listarServicos(
             nome_servico,
-            categoria
+            categoria, 
+            valor
         );
 
         res.status(200).json(servicos);

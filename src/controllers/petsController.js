@@ -22,7 +22,7 @@ async function cadastrarPet(req, res) {
 }
 
 async function listarPetsPorCliente(req, res) {
-    const cpfCliente = req.session.userId;
+    const cpfCliente = req.user.cpf;
 
     if (!cpfCliente) {
         return res.status(401).json({ message: 'Acesso negado. Cliente não autenticado.' });

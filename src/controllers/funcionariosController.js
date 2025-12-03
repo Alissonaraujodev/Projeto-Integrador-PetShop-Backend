@@ -1,14 +1,15 @@
 const bcrypt = require('bcrypt');
 const funcionarioModel = require('../models/funcionariosModel');
 const loginModel = require('../models/loginModel')
-const validarSenhaForte = require('../utils/validarSenha');
+const {validarSenhaForte} = require('../utils/validarSenha');
 
 async function cadastrarFuncionario(req, res) {
-  const id_profissional_logado = req.session.userId;
+  const id_profissional_logado = req.user.id_profissional;
 
   if (!id_profissional_logado) {
     return res.status(401).json({ mensagem: 'Acesso negado. Funcionário não autenticado.' });
   }
+
   const { nome, email, senha, cargo, crmv } = req.body;
 
   if (!validarSenhaForte(senha)) {

@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const loginModel = require('../models/loginModel');
-const gerarToken = require("../utils/gerarToken");
+const {gerarTokenFuncionario, gerarTokenCliente }= require("../utils/gerarToken");
 
 async function login(req, res) {
   const { email, senha } = req.body;
@@ -15,7 +15,7 @@ async function login(req, res) {
       }
 
       // 👉 Token baseado no CPF
-      const token = gerarToken.gerarTokenCliente(cliente.cpf);
+      const token = gerarTokenCliente(cliente);
 
       return res.json({
         message: "Login de cliente realizado com sucesso!",
@@ -34,10 +34,7 @@ async function login(req, res) {
         return res.status(401).json({ message: "Senha incorreta" });
       }
 
-      const token = gerarToken.gerarTokenFuncionario(
-        funcionario.id_profissional,
-        funcionario.cargo
-      );
+      const token = gerarTokenFuncionario(funcionario);
 
       return res.json({
         message: "Login de funcionário realizado com sucesso!",

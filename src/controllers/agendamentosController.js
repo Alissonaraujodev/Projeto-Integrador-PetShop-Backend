@@ -3,7 +3,7 @@ const agendamentoService = require('../service/agendamentosService')
 const servicoProfissionalService = require('../service/servicosProfissionalService')
 
 async function criarAgendamento(req, res) {
-    const cpfCliente = req.session.userId;
+    const cpfCliente = req.user.cpf;
 
     if (!cpfCliente) {
         return res.status(401).json({ message: 'Acesso negado. Cliente não autenticado.' });
