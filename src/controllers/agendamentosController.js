@@ -41,7 +41,7 @@ async function criarAgendamento(req, res) {
 }
 
 async function listarAgendamentoCliente(req, res) {
-    const cpfCliente = req.session.userId; 
+    const cpfCliente = req.user.cpf; 
 
     if (!cpfCliente) {
         return res.status(401).json({ message: 'Acesso negado. Cliente não autenticado.' });
@@ -64,7 +64,7 @@ async function listarAgendamentoCliente(req, res) {
 }
 
 async function listarAgendamentos(req, res) {
-    const id_profissional_logado = req.session.userId;
+    const id_profissional_logado = req.user.id_profissional;
     const { data, idProfissional, servico } = req.query;  
 
     if (!id_profissional_logado) {
@@ -87,7 +87,7 @@ async function listarAgendamentos(req, res) {
 }
 
 async function atualizarAgendamentoCliente(req, res) {
-    const cpfCliente = req.session.userId;
+    const cpfCliente = req.user.cpf;
     const { id_agendamento } = req.params; 
     const{ id_pet, data_hora, id_servico } = req.body;
     
@@ -128,7 +128,7 @@ async function atualizarAgendamentoCliente(req, res) {
 }
 
 async function atualizarAgendamentoVeterinario(req, res) {
-    const id_profissional_logado = req.session.userId;
+    const id_profissional_logado = req.user.id_profissional;
     const { id_agendamento } = req.params;
     const{ status } = req.body;
 
@@ -177,8 +177,8 @@ async function atualizarAgendamentoVeterinario(req, res) {
 }
 
 async function cancelarAgendamento(req, res) {
-  const id_profissional_logado = req.session.userId;
-  const cpfCliente = req.session.userId; 
+  const id_profissional_logado = req.user.id_profissional;
+  const cpfCliente = req.user.cpf;
   const { id_agendamento } = req.params;
 
   if (!id_profissional_logado && !cpfCliente) {

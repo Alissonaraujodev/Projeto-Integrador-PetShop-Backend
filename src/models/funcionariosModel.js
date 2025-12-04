@@ -44,9 +44,60 @@ async function atualizarSenhaFuncionario(id_profissional, novaSenhaHash) {
   return result.affectedRows > 0;
 }
 
+async function listarProfissionais(nome, cargo) {
+    let query = "SELECT * FROM funcionarios WHERE 1 = 1";
+    const params = [];
+
+    if (nome) {
+        query += " AND nome LIKE ?";
+        params.push(`%${nome}%`);
+    }
+
+    if (cargo) {
+        query += " AND cargo LIKE ?";
+        params.push(`%${cargo}%`);
+    }
+
+    const [rows] = await pool.query(query, params);
+    return rows;
+}
+
+async function listarProfissionaisPorCategoria(categoria) {
+
+    let cargosPermitidos = [];
+
+    switch (categoria.toLowerCase()) {
+
+        case "estética":
+        case "Banho simples":
+            cargosPermitidos = ['Banhista', 'Tosador'];
+            break;
+
+        case "veterinária":
+        case "Consulta":
+            cargosPermitidos = ['Veterinario'];
+            break;
+
+        default:
+            cargosPermitidos = [];
+    }
+
+    if (cargosPermitidos.length === 0) return [];
+
+    const [rows] = await pool.query(
+        "SELECT * FROM funcionarios WHERE cargo IN (?)",
+        [cargosPermitidos]
+    );
+
+    return rows;
+}
+
+
 module.exports = { 
   cadastrarFuncionario, 
   atualizarFuncionario, 
   buscarFuncionarioPorId, 
-  atualizarSenhaFuncionario
+  atualizarSenhaFuncionario, 
+  listarProfissionais,
+  listarProfissionaisPorCategoria
 };

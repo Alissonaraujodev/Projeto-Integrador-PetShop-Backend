@@ -37,7 +37,7 @@ async function cadastrarFuncionario(req, res) {
 }
 
 async function atualizarFuncionario(req, res) {
-  const id_profissional_logado = req.session.userId;
+  const id_profissional_logado = req.user.id_profissional;
 
   if (!id_profissional_logado) {
     return res.status(401).json({ mensagem: 'Acesso negado. Funcionário não autenticado.' });
@@ -65,7 +65,7 @@ async function atualizarFuncionario(req, res) {
 }
 
 async function alterarSenhaFuncionario(req, res) {
-  const id_profissional_logado = req.session.userId;
+  const id_profissional_logado = req.user.id_profissional;
   const { senha_atual, nova_senha } = req.body;
 
   if (!id_profissional_logado) {
@@ -109,8 +109,42 @@ async function alterarSenhaFuncionario(req, res) {
   }
 }
 
+async function listarProfissionais(req, res) {
+
+    const { nome, cargo } = req.query;  
+
+    try {
+        const profissionais = await funcionarioModel.listarProfissionais(
+            nome,
+            cargo
+        );
+
+        res.status(200).json(profissionais);
+
+    } catch (error) {
+        console.error('Erro ao buscar Serviços:', error);
+        res.status(500).json({ message: 'Erro interno ao buscar Profissionais.' });
+    }
+}
+
+async function listarPorCategoria(req, res) {
+    const categoria = req.params.categoria;
+
+    try {
+        const profissionais = await funcionarioModel.listarProfissionaisPorCategoria(categoria);
+        res.status(200).json(profissionais);
+
+    } catch (error) {
+        console.error("Erro ao buscar profissionais:", error);
+        res.status(500).json({ message: "Erro interno ao buscar profissionais." });
+    }
+}
+
+
 module.exports = { 
   cadastrarFuncionario, 
   atualizarFuncionario,
-  alterarSenhaFuncionario
+  alterarSenhaFuncionario,
+  listarProfissionais,
+  listarPorCategoria
 };

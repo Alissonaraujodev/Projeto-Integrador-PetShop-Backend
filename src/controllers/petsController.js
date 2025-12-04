@@ -41,7 +41,7 @@ async function listarPetsPorCliente(req, res) {
 }
 
 async function listarTodosPets(req, res) {
-    const id_profissional_logado = req.session.userId;
+    const id_profissional_logado = req.user.id_profissional;
 
     if (!id_profissional_logado) {
         return res.status(401).json({ mensagem: 'Acesso negado. Funcionário não autenticado.' });
@@ -59,7 +59,7 @@ async function listarTodosPets(req, res) {
 }
 
 async function atualizarPetCliente(req, res) {
-    const cpfCliente = req.session.userId;
+    const cpfCliente = req.user.cpf;
     const { id_pet } = req.params; 
     const{ nome } = req.body;
     
@@ -86,7 +86,7 @@ async function atualizarPetCliente(req, res) {
 }
 
 async function atualizarPetVeterinario(req, res) {
-    const id_profissional_logado = req.session.userId;
+    const id_profissional_logado = req.user.id_profissional;
     const { id_pet } = req.params;
     const{ peso_atual, castrado, observacoes_saude } = req.body;
 

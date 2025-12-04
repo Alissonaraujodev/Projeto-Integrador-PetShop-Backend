@@ -1,7 +1,7 @@
 const consultaModel = require('../models/consultasModel');
 
 async function criarConsulta(req, res) {
-    const id_profissional_logado = req.session.userId;
+    const id_profissional_logado = req.user.id_profissional;
 
     const { id_agendamento, diagnostico, medicacao, peso_pet } = req.body;
 
@@ -22,7 +22,7 @@ async function criarConsulta(req, res) {
 }
 
 async function listarConsultaCliente(req, res){
-    const cpfCliente = req.session.userId; 
+    const cpfCliente = req.user.cpf;
     
         if (!cpfCliente) {
             return res.status(401).json({ message: 'Acesso negado. Cliente não autenticado.' });
@@ -45,7 +45,7 @@ async function listarConsultaCliente(req, res){
 }
 
 async function listarCunsultas(req, res) {
-    const id_profissional_logado = req.session.userId;
+    const id_profissional_logado = req.user.id_profissional;
     const { data, idProfissional } = req.query;  
 
     if (!id_profissional_logado) {

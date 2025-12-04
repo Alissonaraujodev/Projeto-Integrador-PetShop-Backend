@@ -2,7 +2,7 @@ const servicoProfissionalModel = require('../models/servicoProfissionalModel');
 const servicoProfissionalService = require('../service/servicosProfissionalService')
 
 async function servicoProfissional(req, res) {
-    const id_profissional_logado = req.session.userId;
+    const id_profissional_logado = req.user.id_profissional;
 
     const { id_profissional, id_servico } = req.body;
 

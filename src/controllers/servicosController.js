@@ -1,7 +1,7 @@
 const servicoModel = require('../models/servicosModel');
 
 async function cadastrarServico(req, res) {
-  const id_profissional_logado = req.session.userId;
+  const id_profissional_logado = req.user.id_profissional;
   const { nome_servico, valor, categoria } = req.body;
 
   if (!id_profissional_logado) {
@@ -43,7 +43,7 @@ async function listarServicos(req, res) {
 }
 
 async function atualizarServico(req, res) {
-  const id_profissional_logado = req.session.userId;
+  const id_profissional_logado = req.user.id_profissional;
   const { id_servico } = req.params;
   const{ nome_servico, valor, categoria } = req.body;
 
