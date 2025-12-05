@@ -7,7 +7,6 @@ async function login(req, res) {
    const { email, senha } = req.body;
 
    try {
-     // 1. TENTA LOGAR COMO FUNCIONÁRIO PRIMEIRO
      const funcionario = await loginModel.encontrarFuncionarioPorEmail(email);
 
      if (funcionario) {
@@ -28,7 +27,6 @@ async function login(req, res) {
         });
      }
 
-     // 2. TENTA LOGAR COMO CLIENTE SÓ SE NÃO FOR ENCONTRADO COMO FUNCIONÁRIO
      const cliente = await loginModel.encontrarClientePorEmail(email);
 
      if (cliente) {
