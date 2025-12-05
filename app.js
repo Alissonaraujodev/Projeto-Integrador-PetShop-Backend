@@ -42,6 +42,7 @@ app.use('/', require('./src/routes/agendamentosRoutes'));
 app.use('/', require('./src/routes/verificacaoRoutes'));
 app.use('/', require('./src/routes/servicoProfissionalRoutes'));
 app.use('/', require('./src/routes/loginRoutes'));
+app.use('/', require('./src/routes/consultasRoutes'));
 
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);
